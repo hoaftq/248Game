@@ -37,13 +37,9 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
      * 
      * @param {*} posFrom 
      * @param {*} posTo 
-     * @param {*} newText 
+     * @param {*} newValue 
      */
-    this.move = function (posFrom, posTo, newText) {
-
-        console.log(posFrom);
-        console.log(posTo);
-        console.log(newText);
+    this.move = function (posFrom, posTo, newValue) {
 
         // If source position and destination position are different
         if (posFrom.x != posTo.x || posFrom.y != posTo.y) {
@@ -71,9 +67,9 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
         }
 
         // A new value need to be applied to the destination tile
-        if (newText) {
+        if (newValue) {
             tile.queue(function () {
-                tile.text(newText).dequeue();
+                tile.text(newValue).addClass('v' + newValue).dequeue();
             });
         }
     }
@@ -89,7 +85,7 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
         }
     }
 
-    function createTile(pos, clazz, text, hide) {
+    function createTile(pos, clazz, value, hide) {
         var tile = $('<div></div>')
             .css({
                 left: (padding + pos.x * size) + 'px',
@@ -98,10 +94,11 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
                 height: tileSize + 'px',
                 'line-height': tileSize + 'px'
             })
-            .addClass(clazz);
+            .addClass(clazz)
+            .addClass('v' + value);
 
-        if (text) {
-            tile.text(text);
+        if (value) {
+            tile.text(value);
         }
 
         if (hide) {

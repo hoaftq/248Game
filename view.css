@@ -1,3 +1,6 @@
+body{
+    font-family: sans-serif;
+}
 .game-board {
     background-color: burlywood;
     position: relative;
@@ -11,4 +14,44 @@
     text-align: center;
     font-size: 60;
     background-color: lavender;
+}
+
+.game-board > div.v2{
+    background-color: aliceblue;
+}
+
+.game-board > div.v4{
+    background-color: antiquewhite;
+}
+
+.game-board > div.v8{
+    background-color: bisque;
+}
+
+.game-board > div.v16{
+    background-color: darksalmon;
+}
+
+.game-board > div.v32{
+    background-color: coral;
+}
+
+.game-board > div.v64{
+    background-color: goldenrod;
+}
+
+.game-board > div.v128{
+    background-color: gold;
+}
+
+.game-board > div.v256{
+    background-color: darkorange
+}
+
+#score{
+    background-color: burlywood;
+    font-size: 30;
+    margin-bottom: 5px;
+    width: 250px;
+    text-align: center;
 }

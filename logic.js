@@ -4,6 +4,7 @@
 function GameLogic(xSize, ySize) {
     var board = [];
     var countEmptyTile = xSize * ySize;
+    var score = 0;
 
     this.initGameBoard = function () {
         for (let i = 0; i < xSize; i++) {
@@ -16,12 +17,23 @@ function GameLogic(xSize, ySize) {
         }
     }
 
+    this.clearGameBoard = function () {
+        for (let i = 0; i < xSize; i++) {
+            for (let j = 0; j < ySize; j++) {
+                board[i][j] = 0;
+            }
+        }
+
+        countEmptyTile = xSize * ySize;
+        score = 0;
+    }
+
     this.putRandomTile = function (callback) {
         var position = Math.floor(Math.random() * countEmptyTile);
         for (let i = 0; i < xSize; i++) {
             for (let j = 0; j < ySize; j++) {
                 if (board[i][j] == 0 && position-- == 0) {
-                    board[i][j] = 2;
+                    board[i][j] = randomValue();
                     countEmptyTile--;
                     return callback({ x: i, y: j }, board[i][j]);
                 }
@@ -29,9 +41,50 @@ function GameLogic(xSize, ySize) {
         }
     }
 
-    this.moveUp = function (callback) {
+    this.isGameOver = function () {
+        for (let i = 0; i < xSize; i++) {
+            for (let j = 0; j < ySize; j++) {
 
-        // Go though all columns
+                // There is still empty tile
+                if (board[i][j] == 0) {
+                    return false;
+                }
+
+                // 2 tiles in a row that can be merged together
+                if (j + 1 < ySize && board[i][j] == board[i][j + 1]) {
+                    return false;
+                }
+
+                // 2 tiles in a column that can be merged together
+                if (i + 1 < xSize && board[i][j] == board[i + 1][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    this.move = function (direct, callback, scoreCallback) {
+        switch (direct) {
+            case 'up':
+                moveUp(callback, scoreCallback);
+                break;
+            case 'down':
+                moveDown(callback, scoreCallback);
+                break;
+            case 'left':
+                moveLeft(callback, scoreCallback);
+                break;
+            case 'right':
+                moveRight(callback, scoreCallback);
+                break;
+        }
+    }
+
+    function moveUp(callback, scoreCallback) {
+
+        // Go though all colum}ns
         for (let i = 0; i < xSize; i++) {
 
             // Point to the position where a tile can move to or merge with
@@ -56,7 +109,7 @@ function GameLogic(xSize, ySize) {
                         if (board[i][p] == board[i][j]) {
 
                             // Merge (i, j) with (i, p)
-                            merge({ x: i, y: j }, { x: i, y: p }, callback);
+                            merge({ x: i, y: j }, { x: i, y: p }, callback, scoreCallback);
 
                             // (i, j) has been processed, continue with the next tile
                             j++;
@@ -81,11 +134,9 @@ function GameLogic(xSize, ySize) {
                 }
             }
         }
-
-        console.debug(board);
     }
 
-    this.moveDown = function (callback) {
+    function moveDown(callback, scoreCallback) {
 
         // Go though all columns
         for (let i = 0; i < xSize; i++) {
@@ -108,7 +159,7 @@ function GameLogic(xSize, ySize) {
                         if (board[i][p] == board[i][j]) {
 
                             // Merge (i, j) with (i, p)
-                            merge({ x: i, y: j }, { x: i, y: p }, callback);
+                            merge({ x: i, y: j }, { x: i, y: p }, callback, scoreCallback);
                             j--;
 
                             p--
@@ -124,11 +175,9 @@ function GameLogic(xSize, ySize) {
                 }
             }
         }
-
-        console.debug(board);
     }
 
-    this.moveLeft = function (callback) {
+    function moveLeft(callback, scoreCallback) {
 
         // Go though all rows
         for (let j = 0; j < ySize; j++) {
@@ -151,7 +200,7 @@ function GameLogic(xSize, ySize) {
                         if (board[p][j] == board[i][j]) {
 
                             // Merge (i, j) with (i, p)
-                            merge({ x: i, y: j }, { x: p, y: j }, callback);
+                            merge({ x: i, y: j }, { x: p, y: j }, callback, scoreCallback);
                             i++;
 
                             p++;
@@ -167,11 +216,10 @@ function GameLogic(xSize, ySize) {
                 }
             }
         }
-
-        console.debug(board);
     }
 
-    this.moveRight = function (callback) {
+    function moveRight(callback, scoreCallback) {
+
         // Go though all rows
         for (let j = 0; j < ySize; j++) {
 
@@ -193,7 +241,7 @@ function GameLogic(xSize, ySize) {
                         if (board[p][j] == board[i][j]) {
 
                             // Merge (i, j) with (p, j)
-                            merge({ x: i, y: j }, { x: p, y: j }, callback);
+                            merge({ x: i, y: j }, { x: p, y: j }, callback, scoreCallback);
                             i--;
                             p--;
                         } else {
@@ -208,32 +256,40 @@ function GameLogic(xSize, ySize) {
                 }
             }
         }
-
-        console.debug(board);
-    }
-
-    this.clearGameBoard = function () {
-        for (let i = 0; i < xSize; i++) {
-            for (let j = 0; j < ySize; j++) {
-                board[i][j] = 0;
-            }
-        }
-
-        countEmptyTile = xSize * ySize;
     }
 
     function move(from, to, callback) {
         board[to.x][to.y] = board[from.x][from.y];
         board[from.x][from.y] = 0;
-        callback(from, to);
+        if (callback) {
+            callback(from, to);
+        }
     }
 
-    function merge(from, to, callback) {
+    function merge(from, to, callback, scoreCallback) {
         board[to.x][to.y] += board[from.x][from.y];
         board[from.x][from.y] = 0;
-        callback(from, to, board[to.x][to.y]);
+        if (callback) {
+            callback(from, to, board[to.x][to.y]);
+        }
+
+        if (scoreCallback) {
+            scoreCallback(score += board[to.x][to.y], board[to.x][to.y]);
+        }
 
         // A merge leaves a position empty 
         countEmptyTile++;
+    }
+
+    /**
+     * Make a random value of 2 or 4.
+     * 75% chance for 2 and 25% chance for 4
+     */
+    function randomValue() {
+        if (Math.random() < 0.75) {
+            return 2;
+        }
+
+        return 4;
     }
 }
