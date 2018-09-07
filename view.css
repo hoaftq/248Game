@@ -1,6 +1,7 @@
 body{
     font-family: sans-serif;
 }
+
 .game-board {
     background-color: burlywood;
     position: relative;
@@ -42,16 +43,60 @@ body{
 
 .game-board > div.v128{
     background-color: gold;
+    font-size: 40;
 }
 
 .game-board > div.v256{
-    background-color: darkorange
+    background-color: darkorange;
+    font-size: 40;
 }
 
-#score{
+#popup{
+    background-color: gray;
+    text-align: center;
+    font-size: 40px;
+    color: red;
+}
+/*-------------------------------------------------*/
+
+#status{
+    display: flex;
+    color: darkblue;
+    margin-bottom: 2px;
+}
+
+.new-game{
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    text-align: center;
+    background-color: blanchedalmond;
+    font-weight: bold;
+    line-height: 60px;
+    width: 120px;
+}
+
+.new-game:hover{
+    background-color: darksalmon;
+}
+
+.score-board{
     background-color: burlywood;
-    font-size: 30;
-    margin-bottom: 5px;
-    width: 250px;
+    font-size: 25px;
+    width: 120px;
+    height: 60px;
+    text-align: center;
+}
+
+/*-------------------------------------------------*/
+
+#instruction{
+    margin-top: 20px;
+}
+
+/*-------------------------------------------------*/
+
+#about{
+    font-size: small; 
     text-align: center;
 }

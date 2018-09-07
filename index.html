@@ -10,16 +10,37 @@
         $(function () {
             var controller = new GameController();
             controller.newGame();
+
+            $('.new-game').click(function (e) {
+                controller.newGame();
+            });
         })
     </script>
 </head>
 
 <body>
-    <div id="score">
-        Score&nbsp;
-        <span>0</span>
+    <div style="margin: auto; width: 370px;">
+        <div id="status">
+            <div class="score-board">
+                <span>Score</span>
+                <div id="score"></div>
+            </div>
+            <div class="new-game">New Game</div>
+            <div class="score-board">
+                <span>Highest</span>
+                <div id="highest"></div>
+            </div>
+        </div>
+        <div id="container"></div>
+        <div id="instruction">
+            Uses up, down, left and right arrow key to move tiles.
+            <br> When 2 tiles next to each other have the same value they will be merged and you will get some scores.
+        </div>
     </div>
-    <div id="container"></div>
+    <p id="about">
+        This is a demostration of 248Game project which is an open source and stored
+        <a href="https://github.com/hoaftq/248Game" target="_blank">here</a>
+    </p>
 </body>
 
 </html>
