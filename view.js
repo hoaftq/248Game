@@ -3,29 +3,91 @@
 
 function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
     var size = tileSize + padding;
-    var board;
+    var gameBoard;
+    var scoreBoard;
+    var bestScoreBoard;
 
     /**
      * Initialize a game board in the given container
      * @param {*} container 
+     * @param {*} newGameCallback 
      */
-    this.init = function (container) {
+    this.init = function (container, newGameCallback) {
+        var barWidth = size + padding;
+        var barFontSize = tileSize / 3.5;
+        var barHeight = barFontSize * 2.5;
 
-        // Create a game-board div that will contains all the tiles
-        board = $('<div></div>')
-            .addClass('game-board')
+        var gameControl = $('<div></div>')
+            .addClass('g248-game-control')
+            .css('font-size', barFontSize + 'px')
+            .height(barHeight);
+
+        $('<div></div>').addClass('g248-score-board')
+            .append('<div>Score</div>')
+            .append(scoreBoard = $('<div>0</div>').css('margin-top', (-barFontSize / 3) + 'px'))
+            .width(barWidth)
+            .appendTo(gameControl);
+
+        newGameButton = $('<div>New game</div>')
+            .addClass('g248-new-game')
+            .width(barWidth)
+            .css('line-height', barHeight + 'px')
+            .appendTo(gameControl)
+            .click($.proxy(function (e) {
+
+                // Clear the game board
+                this.clear();
+
+                if (newGameCallback) {
+                    newGameCallback();
+                }
+            }, this));
+
+        $('<div></div>').addClass('g248-score-board')
+            .append('<div>Best</div>')
+            .width(barWidth)
+            .append(bestScoreBoard = $('<div>0</div>').css('margin-top', (-barFontSize / 3) + 'px'))
+            .appendTo(gameControl);
+
+        // Create a game-board div that will contain all the tiles
+        gameBoard = $('<div></div>')
+            .addClass('g248-game-board')
             .css({
                 width: (size * xDim + padding) + 'px',
                 height: (size * yDim + padding) + 'px'
-            })
-            .appendTo(container);
+            });
 
         // Create backgound tiles
         for (let i = 0; i < xDim; i++) {
             for (let j = 0; j < yDim; j++) {
-                board.append(createTile({ x: i, y: j }));
+                gameBoard.append(createTile({ x: i, y: j }));
             }
         }
+
+        $(container).append(gameControl).append(gameBoard);
+    }
+
+    /**
+     * Display new score
+     * @param {*} score 
+     */
+    this.score = function (score) {
+        scoreBoard.text(score);
+    }
+
+    /**
+     * Display a new best score
+     * @param {*} score 
+     */
+    this.bestScore = function (score) {
+        bestScoreBoard.text(score);
+    }
+
+    /**
+     * Get width of the game board
+     */
+    this.width = function () {
+        return size * xDim + padding;
     }
 
     /**
@@ -35,8 +97,13 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
     this.clear = function () {
 
         // Remove all tiles that is created when playing
-        board.find('.play-tile').remove();
-        $('#popup').remove();
+        gameBoard.find('.g248-play-tile').remove();
+
+        // Reset score
+        this.score(0);
+
+        // Remove ended-game popup
+        $('.g248-gameover-popup').remove();
     }
 
     /**
@@ -47,8 +114,8 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
     this.putAt = function (pos, value) {
 
         // Creates a hidden tile then shows it with fade-in animation
-        createTile(pos, 'play-tile ' + createPosClass(pos), value, true)
-            .appendTo(board)
+        createTile(pos, 'g248-play-tile ' + createPosClass(pos), value, true)
+            .appendTo(gameBoard)
             .fadeIn(animationSpeed);
     }
 
@@ -67,8 +134,8 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
         // If source position and destination position are different
         if (posFrom.x != posTo.x || posFrom.y != posTo.y) {
 
-            var fromTile = board.find('.' + fromClass);
-            var toTile = board.find('.' + toClass);
+            var fromTile = gameBoard.find('.' + fromClass);
+            var toTile = gameBoard.find('.' + toClass);
 
             // There is a tile at the same position as the destinaton then removes it first with animation
             toTile.fadeOut(animationSpeed, function () {
@@ -84,28 +151,37 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
                 .removeClass(fromClass)
                 .addClass(toClass);
         } else {
-            var tile = board.find('.' + toClass);
+            var tile = gameBoard.find('.' + toClass);
         }
 
         // A new value need to be applied to the destination tile
         if (newValue) {
             tile.queue(function () {
+                let fontSize = getTileFontSize(newValue);
                 tile.text(newValue)
-                    .removeClass('v' + (newValue / 2))
-                    .addClass('v' + newValue)
+                    .css('font-size', fontSize + 'px')
+                    .removeClass('g248-v' + (newValue / 2))
+                    .addClass('g248-v' + newValue)
                     .dequeue();
             });
         }
     }
 
+    /**
+     * Show the game-over popup
+     */
     this.gameOver = function () {
-        $('<div>Game Over!</div>').attr('id', 'popup').css({
-            'margin-top': '-' + board.css('height'),
-            width: board.css('width'),
-            height: board.css('height'),
-            'line-height': board.css('height'),
-            opacity: 0.5,
-        }).insertAfter(board);
+        var fontSize = getTileFontSize(128);
+        $('<div>Game Over!</div>')
+            .addClass('g248-gameover-popup')
+            .css({
+                'font-size': fontSize + 'px',
+                'margin-top': '-' + gameBoard.css('height'),
+                width: gameBoard.css('width'),
+                height: gameBoard.css('height'),
+                'line-height': gameBoard.css('height'),
+            })
+            .insertAfter(gameBoard);
     }
 
     /**
@@ -137,7 +213,8 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
         }
 
         if (value) {
-            tile.text(value).addClass('v' + value);
+            let fontSize = getTileFontSize(value);
+            tile.text(value).addClass('g248-v' + value).css('font-size', fontSize + 'px');
         }
 
         if (hide) {
@@ -145,5 +222,13 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
         }
 
         return tile;
+    }
+
+    /**
+     * Decide tile's font size base on the number of digits of the tile's value
+     * @param {*} tileValue 
+     */
+    function getTileFontSize(tileValue) {
+        return tileSize * 0.75 / (1 + (tileValue.toString().length - 1) * 0.2);
     }
 }

@@ -282,7 +282,7 @@ function GameLogic(xSize, ySize) {
     }
 
     /**
-     * Make a random value of 2 or 4.
+     * Make a random value of either 2 or 4.
      * 75% chance for 2 and 25% chance for 4
      */
     function randomValue() {

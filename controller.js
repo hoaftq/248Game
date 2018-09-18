@@ -4,7 +4,10 @@
 const X_SIZE = 4;
 const Y_SIZE = 4;
 
+const PADDING_RATIO = 10;
+
 function GameController() {
+
     const direct = {
         ArrowUp: 'up',
         ArrowDown: 'down',
@@ -13,19 +16,40 @@ function GameController() {
     };
 
     var that = this;
+
+    var tileSize;
+    var padding;
+
     var logic;
     var view;
+
     this.bestScore = 0;
 
-    this.newGame = function () {
-        initGame();
+    calTileSizeAndPadding();
 
-        // Create 2 new random tile
-        for (let i = 0; i < 2; i++) {
-            logic.putRandomTile(function (pos, text) {
-                view.putAt(pos, text);
-            });
-        }
+    this.start = function () {
+        logic = new GameLogic(X_SIZE, Y_SIZE);
+        view = new GameView(X_SIZE, Y_SIZE, tileSize, padding, 100);
+
+        logic.initGameBoard();
+        view.init('#container', function () {
+
+            // Create a new game when clicking new game button
+            newGame();
+        });
+
+        // This will make the game board centered in the page
+        $("#container").width(view.width());
+
+        $('#container').off('swipeleft').on('swipeleft', function (e) {
+            move('left');
+        }).off('swiperight').on('swiperight', function (e) {
+            move('right');
+        }).off('swipeup').on('swipeup', function (e) {
+            move('up');
+        }).off('swipedown').on('swipedown', function (e) {
+            move('down');
+        });
 
         // Register key handler for the game
         $(document).off('keydown').keydown(function (e) {
@@ -35,53 +59,84 @@ function GameController() {
                 return;
             }
 
-            // Move tile according to the direction
-            logic.move(
-                direct[e.key],
+            // Move tiles according to the direction
+            move(direct[e.key]);
 
-                // Render movement on view
-                function (from, to, newText) {
-                    view.move(from, to, newText);
-                },
-
-                // Render new score
-                function (score, addedScore) {
-                    $('#score').text(score);
-
-                    if (score > that.bestScore) {
-                        that.bestScore = score;
-                        $('#highest').text(that.bestScore);
-                    }
-                });
-
-            setTimeout(function () {
-                logic.putRandomTile(function (pos, text) {
-                    view.putAt(pos, text);
-                    if (logic.isGameOver()) {
-                        view.gameOver();
-                    }
-                });
-            }, 150);
-
+            e.preventDefault();
         });
+
+        // Create a new game for a first time
+        newGame();
     }
 
-    function initGame() {
+    /**
+     * Move tiles with given direct
+     * @param {*} direct 
+     */
+    function move(direct) {
 
-        // First time enter the page
-        if (!(logic && view)) {
-            logic = new GameLogic(X_SIZE, Y_SIZE);
-            view = new GameView(X_SIZE, Y_SIZE, 80, 10, 100);
+        logic.move(direct,
 
-            logic.initGameBoard();
-            view.init('#container');
-        } else {
-            // Click New Game button
-            logic.clearGameBoard();
-            view.clear();
+            // Render movement on view
+            function (from, to, newValue) {
+                view.move(from, to, newValue);
+            },
+
+            // Render new score
+            function (score, addedScore) {
+                view.score(score);
+                if (score > that.bestScore) {
+                    // Save a new best score
+                    that.bestScore = score;
+
+                    // Display the best score
+                    view.bestScore(that.bestScore);
+                }
+            });
+
+        // Put a new random tile
+        setTimeout(function () {
+            logic.putRandomTile(function (pos, text) {
+                view.putAt(pos, text);
+                if (logic.isGameOver()) {
+                    view.gameOver();
+                }
+            });
+        }, 150);
+    }
+
+    function newGame() {
+        logic.clearGameBoard();
+        view.clear();
+
+        // Create 2 new random tiles
+        for (let i = 0; i < 2; i++) {
+            logic.putRandomTile(function (pos, text) {
+                view.putAt(pos, text);
+            });
         }
+    }
 
-        $('#score').text(0);
-        $('#highest').text(that.bestScore);
+    /**
+     * Calculate title size and padding according to page size
+     */
+    function calTileSizeAndPadding() {
+        var maxSize = Math.min($(document).width(), $(document).height() * Y_SIZE / (Y_SIZE + 1));
+        // var size;
+        // if (maxSize >= 1200) {
+        //     size = 900;
+        // } else if (maxSize >= 992) {
+        //     size = 750;
+        // } else if (maxSize >= 768) {
+        //     size = 600;
+        // } else if (maxSize >= 600) {
+        //     size = 550;
+        // } else {
+        //     size = maxSize;
+        // }
+        var size = maxSize - maxSize / X_SIZE / PADDING_RATIO;
+
+        padding = size / X_SIZE / PADDING_RATIO;
+        tileSize = (PADDING_RATIO - 1) * padding;
     }
 }

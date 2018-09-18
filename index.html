@@ -1,41 +1,62 @@
+<!DOCTYPE html>
 <html>
 
 <head>
+    <title>248 Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="view.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="lib/jquerymobile-swipeupdown.js"></script>
     <script src="view.js"></script>
     <script src="logic.js"></script>
     <script src="controller.js"></script>
     <script>
         $(function () {
             var controller = new GameController();
-            controller.newGame();
+            controller.start();
 
-            $('.new-game').click(function (e) {
-                controller.newGame();
-            });
+            $('#about').nextAll().remove();
         })
     </script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        #instruction {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #container {
+            margin: auto;
+        }
+
+        #about {
+            text-align: center;
+            font-size: small;
+        }
+
+        @media screen and (min-width: 768px) {
+            #instruction {
+                margin-left: 15%;
+                margin-right: 15%;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div style="margin: auto; width: 370px;">
-        <div id="status">
-            <div class="score-board">
-                <span>Score</span>
-                <div id="score"></div>
-            </div>
-            <div class="new-game">New Game</div>
-            <div class="score-board">
-                <span>Highest</span>
-                <div id="highest"></div>
-            </div>
-        </div>
-        <div id="container"></div>
-        <div id="instruction">
-            Uses up, down, left and right arrow key to move tiles.
-            <br> When 2 tiles next to each other have the same value they will be merged and you will get some scores.
-        </div>
+    <div id="container"></div>
+    <div id="instruction">
+        On mobile <b>swipes up, down, left and right</b> to move tiles to corresponding direction.
+        On computer you can use <b>4 arrow keys up, down, left, righ</b> to move tiles.
+        When 2 tiles that have the same value touch each other, they will be merged into a tile that have the value of
+        the total of 2 tiles.
+        And then the value of new tile will be added to your score. Try to get as many scores as you can.
+        Enjoy the game!
     </div>
     <p id="about">
         This is a demostration of 248Game project which is an open source and stored
