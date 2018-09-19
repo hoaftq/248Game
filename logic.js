@@ -6,10 +6,14 @@ function GameLogic(xSize, ySize) {
     var countEmptyTile = xSize * ySize;
     var score = 0;
 
+    /**
+     * Initalize an empty game board
+     */
     this.initGameBoard = function () {
-        for (let i = 0; i < xSize; i++) {
-            let row = [];
-            for (let j = 0; j < ySize; j++) {
+        var i, j, row;
+        for (i = 0; i < xSize; i++) {
+            row = [];
+            for (j = 0; j < ySize; j++) {
                 row.push(0);
             }
 
@@ -17,9 +21,13 @@ function GameLogic(xSize, ySize) {
         }
     }
 
+    /**
+     * Clear the game board
+     */
     this.clearGameBoard = function () {
-        for (let i = 0; i < xSize; i++) {
-            for (let j = 0; j < ySize; j++) {
+        var i, j;
+        for (i = 0; i < xSize; i++) {
+            for (j = 0; j < ySize; j++) {
                 board[i][j] = 0;
             }
         }
@@ -28,10 +36,14 @@ function GameLogic(xSize, ySize) {
         score = 0;
     }
 
+    /**
+     * Put a random value either 2 or 4 to a random 
+     * @param {*} callback 
+     */
     this.putRandomTile = function (callback) {
-        var position = Math.floor(Math.random() * countEmptyTile);
-        for (let i = 0; i < xSize; i++) {
-            for (let j = 0; j < ySize; j++) {
+        var i, j, position = Math.floor(Math.random() * countEmptyTile);
+        for (i = 0; i < xSize; i++) {
+            for (j = 0; j < ySize; j++) {
                 if (board[i][j] == 0 && position-- == 0) {
                     board[i][j] = randomValue();
                     countEmptyTile--;
@@ -41,9 +53,14 @@ function GameLogic(xSize, ySize) {
         }
     }
 
+    /**
+     * Check if the game is over.
+     * This is when it can not be putted a new tile to the board
+     */
     this.isGameOver = function () {
-        for (let i = 0; i < xSize; i++) {
-            for (let j = 0; j < ySize; j++) {
+        var i, j;
+        for (i = 0; i < xSize; i++) {
+            for (j = 0; j < ySize; j++) {
 
                 // There is still empty tile
                 if (board[i][j] == 0) {
@@ -65,6 +82,12 @@ function GameLogic(xSize, ySize) {
         return true;
     }
 
+    /**
+     * Move tiles to given direction
+     * @param {*} direct 
+     * @param {*} callback 
+     * @param {*} scoreCallback 
+     */
     this.move = function (direct, callback, scoreCallback) {
         switch (direct) {
             case 'up':
@@ -84,12 +107,14 @@ function GameLogic(xSize, ySize) {
 
     function moveUp(callback, scoreCallback) {
 
-        // Go though all colum}ns
-        for (let i = 0; i < xSize; i++) {
+        // Go though all columns
+        var i;
+        for (i = 0; i < xSize; i++) {
 
             // Point to the position where a tile can move to or merge with
-            let p = 0;
-            let j = p + 1;
+            // Initialize it with the first row
+            var p = 0,
+                j = p + 1;
             while (j < ySize) {
 
                 // There is a tile at (i, j) that needs to process (move, merge or nothing)
@@ -139,11 +164,13 @@ function GameLogic(xSize, ySize) {
     function moveDown(callback, scoreCallback) {
 
         // Go though all columns
-        for (let i = 0; i < xSize; i++) {
+        var i;
+        for (i = 0; i < xSize; i++) {
 
             // Point to the position where a tile can move to or merge with
-            let p = ySize - 1;
-            let j = p - 1;
+            // Initialize it with the last row
+            var p = ySize - 1,
+                j = p - 1;
             while (j >= 0) {
                 if (board[i][j] != 0) {
 
@@ -180,11 +207,11 @@ function GameLogic(xSize, ySize) {
     function moveLeft(callback, scoreCallback) {
 
         // Go though all rows
-        for (let j = 0; j < ySize; j++) {
+        var j;
+        for (j = 0; j < ySize; j++) {
 
             // Processing pointer
-            let p = 0;
-            let i = p + 1;
+            var p = 0, i = p + 1;
             while (i < xSize) {
                 if (board[i][j] != 0) {
 
@@ -221,11 +248,12 @@ function GameLogic(xSize, ySize) {
     function moveRight(callback, scoreCallback) {
 
         // Go though all rows
-        for (let j = 0; j < ySize; j++) {
+        var j;
+        for (j = 0; j < ySize; j++) {
 
             // Processing pointer
-            let p = xSize - 1;
-            let i = p - 1;
+            var p = xSize - 1,
+                i = p - 1;
             while (i >= 0) {
                 if (board[i][j] != 0) {
 
@@ -258,6 +286,12 @@ function GameLogic(xSize, ySize) {
         }
     }
 
+    /**
+     * Move the tile at {from} to {to}
+     * @param {*} from 
+     * @param {*} to 
+     * @param {*} callback 
+     */
     function move(from, to, callback) {
         board[to.x][to.y] = board[from.x][from.y];
         board[from.x][from.y] = 0;
@@ -266,6 +300,13 @@ function GameLogic(xSize, ySize) {
         }
     }
 
+    /**
+     * Merge the tile at {from} with the tile at {to}
+     * @param {*} from 
+     * @param {*} to 
+     * @param {*} callback 
+     * @param {*} scoreCallback 
+     */
     function merge(from, to, callback, scoreCallback) {
         board[to.x][to.y] += board[from.x][from.y];
         board[from.x][from.y] = 0;

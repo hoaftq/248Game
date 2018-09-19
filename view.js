@@ -38,6 +38,7 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
                 // Clear the game board
                 this.clear();
 
+                // Notifies that a new game is requested
                 if (newGameCallback) {
                     newGameCallback();
                 }
@@ -58,8 +59,9 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
             });
 
         // Create backgound tiles
-        for (let i = 0; i < xDim; i++) {
-            for (let j = 0; j < yDim; j++) {
+        var i, j;
+        for (i = 0; i < xDim; i++) {
+            for (j = 0; j < yDim; j++) {
                 gameBoard.append(createTile({ x: i, y: j }));
             }
         }
@@ -157,7 +159,7 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
         // A new value need to be applied to the destination tile
         if (newValue) {
             tile.queue(function () {
-                let fontSize = getTileFontSize(newValue);
+                var fontSize = getTileFontSize(newValue);
                 tile.text(newValue)
                     .css('font-size', fontSize + 'px')
                     .removeClass('g248-v' + (newValue / 2))
@@ -213,7 +215,7 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
         }
 
         if (value) {
-            let fontSize = getTileFontSize(value);
+            var fontSize = getTileFontSize(value);
             tile.text(value).addClass('g248-v' + value).css('font-size', fontSize + 'px');
         }
 

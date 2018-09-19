@@ -1,14 +1,15 @@
 // 248 Game - JavaScript, Jquery 
 // Write by Trac Quang Hoa, 2018
 
-const X_SIZE = 4;
-const Y_SIZE = 4;
+var X_SIZE = 4;
+var Y_SIZE = 4;
 
-const PADDING_RATIO = 10;
+// Size ratio between the tile and its padding
+var PADDING_RATIO = 10;
 
-function GameController() {
+function GameController(container) {
 
-    const direct = {
+    var direct = {
         ArrowUp: 'up',
         ArrowDown: 'down',
         ArrowLeft: 'left',
@@ -23,6 +24,7 @@ function GameController() {
     var logic;
     var view;
 
+    var $container = $(container);
     this.bestScore = 0;
 
     calTileSizeAndPadding();
@@ -32,16 +34,16 @@ function GameController() {
         view = new GameView(X_SIZE, Y_SIZE, tileSize, padding, 100);
 
         logic.initGameBoard();
-        view.init('#container', function () {
+        view.init($container, function () {
 
             // Create a new game when clicking new game button
             newGame();
         });
 
         // This will make the game board centered in the page
-        $("#container").width(view.width());
+        $container.width(view.width());
 
-        $('#container').off('swipeleft').on('swipeleft', function (e) {
+        $container.off('swipeleft').on('swipeleft', function (e) {
             move('left');
         }).off('swiperight').on('swiperight', function (e) {
             move('right');
@@ -110,7 +112,8 @@ function GameController() {
         view.clear();
 
         // Create 2 new random tiles
-        for (let i = 0; i < 2; i++) {
+        var i;
+        for (i = 0; i < 2; i++) {
             logic.putRandomTile(function (pos, text) {
                 view.putAt(pos, text);
             });
@@ -122,20 +125,7 @@ function GameController() {
      */
     function calTileSizeAndPadding() {
         var maxSize = Math.min($(document).width(), $(document).height() * Y_SIZE / (Y_SIZE + 1));
-        // var size;
-        // if (maxSize >= 1200) {
-        //     size = 900;
-        // } else if (maxSize >= 992) {
-        //     size = 750;
-        // } else if (maxSize >= 768) {
-        //     size = 600;
-        // } else if (maxSize >= 600) {
-        //     size = 550;
-        // } else {
-        //     size = maxSize;
-        // }
-        var size = maxSize - maxSize / X_SIZE / PADDING_RATIO;
-
+        var size = maxSize - 3 * maxSize / X_SIZE / PADDING_RATIO;
         padding = size / X_SIZE / PADDING_RATIO;
         tileSize = (PADDING_RATIO - 1) * padding;
     }
