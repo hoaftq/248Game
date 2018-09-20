@@ -173,8 +173,10 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
      * Show the game-over popup
      */
     this.gameOver = function () {
-        var fontSize = getTileFontSize(128);
-        $('<div>Game Over!</div>')
+        var msg = 'Game Over!';
+        var fontSize = size * xDim / msg.length;
+        $('<div></div>')
+            .text(msg)
             .addClass('g248-gameover-popup')
             .css({
                 'font-size': fontSize + 'px',

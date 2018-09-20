@@ -1,13 +1,10 @@
 // 248 Game - JavaScript, Jquery 
 // Write by Trac Quang Hoa, 2018
 
-var X_SIZE = 4;
-var Y_SIZE = 4;
+function GameController(container, xSize, ySize) {
 
-// Size ratio between the tile and its padding
-var PADDING_RATIO = 10;
-
-function GameController(container) {
+    // Size ratio between the tile and its padding
+    var PADDING_RATIO = 10;
 
     var direct = {
         ArrowUp: 'up',
@@ -30,8 +27,8 @@ function GameController(container) {
     calTileSizeAndPadding();
 
     this.start = function () {
-        logic = new GameLogic(X_SIZE, Y_SIZE);
-        view = new GameView(X_SIZE, Y_SIZE, tileSize, padding, 100);
+        logic = new GameLogic(xSize, ySize);
+        view = new GameView(xSize, ySize, tileSize, padding, 100);
 
         logic.initGameBoard();
         view.init($container, function () {
@@ -69,6 +66,10 @@ function GameController(container) {
 
         // Create a new game for a first time
         newGame();
+    }
+
+    this.destroy = function () {
+        $container.empty();
     }
 
     /**
@@ -111,22 +112,19 @@ function GameController(container) {
         logic.clearGameBoard();
         view.clear();
 
-        // Create 2 new random tiles
-        var i;
-        for (i = 0; i < 2; i++) {
-            logic.putRandomTile(function (pos, text) {
-                view.putAt(pos, text);
-            });
-        }
+        logic.putInitTile(function (pos, text) {
+            view.putAt(pos, text);
+        });
     }
 
     /**
      * Calculate title size and padding according to page size
      */
     function calTileSizeAndPadding() {
-        var maxSize = Math.min($(document).width(), $(document).height() * Y_SIZE / (Y_SIZE + 1));
-        var size = maxSize - 3 * maxSize / X_SIZE / PADDING_RATIO;
-        padding = size / X_SIZE / PADDING_RATIO;
+        // TODO
+        var maxSize = Math.min($(document).width(), $(document).height() * ySize / (ySize + 2));
+        var size = maxSize - 3 * maxSize / xSize / PADDING_RATIO;
+        padding = size / xSize / PADDING_RATIO;
         tileSize = (PADDING_RATIO - 1) * padding;
     }
 }

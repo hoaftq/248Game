@@ -14,8 +14,16 @@
     <script src="controller.js"></script>
     <script>
         $(function () {
-            var controller = new GameController('#container');
-            controller.start();
+            var controller;
+            $('select').change(function (e) {
+                if (controller) {
+                    controller.destroy();
+                }
+
+                var size = parseInt($(this).val());
+                controller = new GameController('#container', size, size);
+                controller.start();
+            }).trigger('change');
 
             $('#about').nextAll().remove();
         })
@@ -40,21 +48,31 @@
         }
 
         @media screen and (min-width: 768px) {
-            #instruction {
-                margin-left: 15%;
-                margin-right: 15%;
+
+            #instruction,
+            .ui-select {
+                width: 50%;
+                margin-left: auto;
+                margin-right: auto;
             }
         }
     </style>
 </head>
 
 <body>
+    <select>
+        <option value="4">4&times;4</option>
+        <option value="5">5&times;5</option>
+        <option value="6">6&times;6</option>
+        <option value="7">7&times;7</option>
+        <option value="8">8&times;8</option>
+    </select>
     <div id="container"></div>
     <div id="instruction">
         On mobile <b>swipes up, down, left and right</b> to move tiles to corresponding direction.
         On computer you can use <b>4 arrow keys up, down, left, righ</b> to move tiles.
         When 2 tiles that have the same value touch each other, they will be merged into a tile that have the value of
-        the total of 2 tiles.
+        a total of 2 tiles.
         And then the value of new tile will be added to your score. Try to get as many scores as you can.
         Enjoy the game!
     </div>

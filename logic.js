@@ -2,6 +2,54 @@
 // Write by Trac Quang Hoa, 2018
 
 function GameLogic(xSize, ySize) {
+
+    var appearingOptions = {
+        4: {
+            frequency: {
+                2: [0, 0.75],
+                4: [0.75, 1]
+            },
+            initQuantity: 2,
+            quantity: 1
+        },
+        5: {
+            frequency: {
+                2: [0, 0.5],
+                4: [0.5, 1]
+            },
+            initQuantity: 3,
+            quantity: 2
+        },
+        6: {
+            frequency: {
+                2: [0, 0.4],
+                4: [0.4, 0.8],
+                8: [0.8, 1]
+            },
+            initQuantity: 4,
+            quantity: 3
+        },
+        7: {
+            frequency: {
+                2: [0, 0.33],
+                4: [0.33, 0.66],
+                8: [0.66, 1]
+            },
+            initQuantity: 4,
+            quantity: 3
+        },
+        8: {
+            frequency: {
+                2: [0, 0.25],
+                4: [0.25, 0.5],
+                8: [0.5, 0.75],
+                16: [0.75, 1]
+            },
+            initQuantity: 5,
+            quantity: 4
+        }
+    };
+
     var board = [];
     var countEmptyTile = xSize * ySize;
     var score = 0;
@@ -14,6 +62,8 @@ function GameLogic(xSize, ySize) {
         for (i = 0; i < xSize; i++) {
             row = [];
             for (j = 0; j < ySize; j++) {
+
+                // a value of 0 means no title here at (i, j)
                 row.push(0);
             }
 
@@ -37,10 +87,32 @@ function GameLogic(xSize, ySize) {
     }
 
     /**
-     * Put a random value either 2 or 4 to a random 
+     * Init the first tiles on the board using appearing options
+     * @param {*} callback 
+     */
+    this.putInitTile = function (callback) {
+        var k = appearingOptions[xSize].initQuantity;
+        for (; k > 0; k--) {
+            putARandomTitle(callback);
+        }
+    }
+
+    /**
+     * Put random tiles using apprearing options
      * @param {*} callback 
      */
     this.putRandomTile = function (callback) {
+        var k = appearingOptions[xSize].quantity;
+        for (; k > 0; k--) {
+            putARandomTitle(callback);
+        }
+    }
+
+    /**
+     * Put a random tile to the board
+     * @param {*} callback 
+     */
+    function putARandomTitle(callback) {
         var i, j, position = Math.floor(Math.random() * countEmptyTile);
         for (i = 0; i < xSize; i++) {
             for (j = 0; j < ySize; j++) {
@@ -172,6 +244,8 @@ function GameLogic(xSize, ySize) {
             var p = ySize - 1,
                 j = p - 1;
             while (j >= 0) {
+
+                // There is a tile at (i, j)
                 if (board[i][j] != 0) {
 
                     // No tile at (i, p)
@@ -323,14 +397,16 @@ function GameLogic(xSize, ySize) {
     }
 
     /**
-     * Make a random value of either 2 or 4.
-     * 75% chance for 2 and 25% chance for 4
+     * Get a random value using appearing options
      */
     function randomValue() {
-        if (Math.random() < 0.75) {
-            return 2;
+        var freq = appearingOptions[xSize].frequency, v,
+            randNumber = Math.random();
+        for (v in freq) {
+            var chances = freq[v];
+            if (chances[0] <= randNumber && randNumber < chances[1]) {
+                return parseInt(v);
+            }
         }
-
-        return 4;
     }
 }

@@ -15,51 +15,51 @@
     border-radius: 4px;
 }
 
-.g248-game-board > div.g248-v2{
+.g248-game-board > div.g248-v2 {
     background-color: hsl(25, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v4{
+.g248-game-board > div.g248-v4 {
     background-color: hsl(50, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v8{
+.g248-game-board > div.g248-v8 {
     background-color: hsl(75, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v16{
+.g248-game-board > div.g248-v16 {
     background-color: hsl(100, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v32{
+.g248-game-board > div.g248-v32 {
     background-color: hsl(125, 100%, 80%);
 }
 
-.g248-game-board > div.g248-v64{
+.g248-game-board > div.g248-v64 {
     background-color: hsl(150, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v128{
+.g248-game-board > div.g248-v128 {
     background-color: hsl(175, 100%, 80%);
 }
 
-.g248-game-board > div.g248-v256{
+.g248-game-board > div.g248-v256 {
     background-color: hsl(200, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v512{
+.g248-game-board > div.g248-v512 {
     background-color: hsl(225, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v1024{
+.g248-game-board > div.g248-v1024 {
     background-color: hsl(250, 100%, 60%);
 }
 
-.g248-game-board > div.g248-v2048{
+.g248-game-board > div.g248-v2048 {
     background-color: hsl(275, 100%, 60%);
 }
 
-.g248-gameover-popup{
+.g248-gameover-popup {
     background-color:gray;;
     text-align: center;
     color: red;
@@ -68,35 +68,34 @@
 }
 /*-------------------------------------------------*/
 
-.g248-game-control{
+.g248-game-control {
     display: flex;
-    color:darkblue;
+    color: darkred;
     margin-bottom: 2px;
     justify-content: space-between;
     font-variant-caps: all-small-caps;
     user-select: none;
 }
 
-.g248-new-game{
+.g248-new-game {
     margin-left: 10px;
     margin-right: 10px;
     cursor: pointer;
     text-align: center;
-    background-color: blanchedalmond;
+    background-color: darkgray;
     font-size: smaller;
-    float: left;
+    float: left; /* for old browser to render game control area in a line */
     border-radius: 4px;
 }
 
-.g248-new-game:hover{
-    color: green;
-    background-color: burlywood;
+.g248-new-game:hover {
+    background-color: #38c;
 }
 
-.g248-score-board{
+.g248-score-board {
     background-color: darkgray;
     height: 100%;
     text-align: center;
-    float: left;
+    float: left; /* for old browser to render game control area in a line */
     border-radius: 4px;
 }
