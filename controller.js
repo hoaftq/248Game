@@ -121,8 +121,7 @@ function GameController(container, xSize, ySize) {
      * Calculate title size and padding according to page size
      */
     function calTileSizeAndPadding() {
-        // TODO
-        var maxSize = Math.min($(document).width(), $(document).height() * ySize / (ySize + 2));
+        var maxSize = Math.min($(document).width(), $(document).height() * 0.7);
         var size = maxSize - 3 * maxSize / xSize / PADDING_RATIO;
         padding = size / xSize / PADDING_RATIO;
         tileSize = (PADDING_RATIO - 1) * padding;

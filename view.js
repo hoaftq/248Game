@@ -13,8 +13,8 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
      * @param {*} newGameCallback 
      */
     this.init = function (container, newGameCallback) {
-        var barWidth = size + padding;
-        var barFontSize = tileSize / 3.5;
+        var barWidth = this.width() / 3;
+        var barFontSize = barWidth / 5;
         var barHeight = barFontSize * 2.5;
 
         var gameControl = $('<div></div>')
@@ -174,7 +174,7 @@ function GameView(xDim, yDim, tileSize, padding, animationSpeed) {
      */
     this.gameOver = function () {
         var msg = 'Game Over!';
-        var fontSize = size * xDim / msg.length;
+        var fontSize = this.width() / msg.length;
         $('<div></div>')
             .text(msg)
             .addClass('g248-gameover-popup')
