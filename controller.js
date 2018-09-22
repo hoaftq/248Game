@@ -22,7 +22,7 @@ function GameController(container, xSize, ySize) {
     var view;
 
     var $container = $(container);
-    this.bestScore = 0;
+    this.bestScore = getBestScore();
 
     calTileSizeAndPadding();
 
@@ -94,6 +94,8 @@ function GameController(container, xSize, ySize) {
 
                     // Display the best score
                     view.bestScore(that.bestScore);
+
+                    saveBestScore();
                 }
             });
 
@@ -111,6 +113,7 @@ function GameController(container, xSize, ySize) {
     function newGame() {
         logic.clearGameBoard();
         view.clear();
+        view.bestScore(that.bestScore);
 
         logic.putInitTile(function (pos, text) {
             view.putAt(pos, text);
@@ -125,5 +128,26 @@ function GameController(container, xSize, ySize) {
         var size = maxSize - 3 * maxSize / xSize / PADDING_RATIO;
         padding = size / xSize / PADDING_RATIO;
         tileSize = (PADDING_RATIO - 1) * padding;
+    }
+
+    /**
+     * Get best score of current game mode stored in cookie
+     */
+    function getBestScore() {
+        var best = $.cookie.get('best' + xSize);
+        if (best === null) {
+            return 0;
+        } else {
+            return parseInt(best);
+        }
+    }
+
+    /**
+     * Save best score to cookie
+     */
+    function saveBestScore() {
+
+        // Expires in 1 year
+        $.cookie.add('best' + xSize, that.bestScore, 12 * 30 * 24 * 3600, '/');
     }
 }
