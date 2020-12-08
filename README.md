@@ -1,4 +1,4 @@
-# 248Game
+### 248Game
 Well-known 248 game written using JavaScript &amp; JQuery. Difference from other implementations it supports many board sizes 4x4, 5x5, 6x6, 7x7 and 8x8. It is also responsive and supports mobile devices as well as computers.
 
 It is using MVC pattern where the program is devided into 3 parts with coressponding files controller.js, logic.js and view.js
